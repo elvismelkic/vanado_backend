@@ -13,6 +13,8 @@ defmodule VanadoBackendWeb.MachineController do
 
   def create(conn, %{"machine" => machine_params}) do
     with {:ok, %Machine{} = machine} <- Machines.create_machine(machine_params) do
+      machine = Machines.get_machine!(machine.id)
+
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.machine_path(conn, :show, machine))
