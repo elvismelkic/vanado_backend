@@ -9,7 +9,7 @@ defmodule VanadoBackend.Failures do
   alias VanadoBackend.Failures.Failure
 
   @doc """
-  Returns the list of failures.
+  Returns the list of failures conditionally filtered by `is_fixed` field.
 
   ## Examples
 
@@ -17,8 +17,11 @@ defmodule VanadoBackend.Failures do
       [%Failure{}, ...]
 
   """
-  def list_failures do
-    Repo.all(Failure)
+  def list_failures(is_fixed) do
+    Failure
+    |> maybe_filter(is_fixed)
+    |> select([f], f)
+    |> Repo.all()
   end
 
   @doc """
@@ -101,4 +104,7 @@ defmodule VanadoBackend.Failures do
   def change_failure(%Failure{} = failure, attrs \\ %{}) do
     Failure.changeset(failure, attrs)
   end
+
+  defp maybe_filter(failure, nil), do: failure
+  defp maybe_filter(failure, is_fixed), do: failure |> where([f], f.is_fixed == ^is_fixed)
 end

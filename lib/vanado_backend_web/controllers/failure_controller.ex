@@ -7,7 +7,9 @@ defmodule VanadoBackendWeb.FailureController do
   action_fallback VanadoBackendWeb.FallbackController
 
   def index(conn, _params) do
-    failures = Failures.list_failures()
+    is_fixed = Map.get(conn.query_params, "fixed")
+
+    failures = Failures.list_failures(is_fixed)
     render(conn, "index.json", failures: failures)
   end
 
