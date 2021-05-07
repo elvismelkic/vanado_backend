@@ -25,6 +25,15 @@ defmodule VanadoBackendWeb.FailureController do
     render(conn, "show.json", failure: failure)
   end
 
+  def update(%Plug.Conn{method: "PATCH"} = conn, %{"id" => id}) do
+    failure = Failures.get_failure!(id)
+
+    with {:ok, %Failure{} = failure} <-
+           Failures.update_failure(failure, %{is_fixed: !failure.is_fixed}) do
+      render(conn, "show.json", failure: failure)
+    end
+  end
+
   def update(conn, %{"id" => id, "failure" => failure_params}) do
     failure = Failures.get_failure!(id)
 
