@@ -4,22 +4,14 @@ defmodule VanadoBackendWeb.FailureControllerTest do
   alias VanadoBackend.Failures
   alias VanadoBackend.Failures.Failure
 
-  @create_attrs %{
-    description: "some description",
-    is_fixed: true,
-    name: "some name"
-  }
+  @create_attrs %{description: nil, is_fixed: true, name: "some name", priority: :moderate}
   @update_attrs %{
     description: "some updated description",
     is_fixed: false,
-    name: "some updated name"
+    name: "some updated name which is more than 20 characters long",
+    priority: :high
   }
-  @invalid_attrs %{description: nil, is_fixed: nil, name: nil}
-
-  def fixture(:failure) do
-    {:ok, failure} = Failures.create_failure(@create_attrs)
-    failure
-  end
+  @invalid_attrs %{description: nil, is_fixed: nil, name: nil, priority: nil, machine_id: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -34,16 +26,17 @@ defmodule VanadoBackendWeb.FailureControllerTest do
 
   describe "create failure" do
     test "renders failure when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.failure_path(conn, :create), failure: @create_attrs)
+      conn = post(conn, Routes.failure_path(conn, :create), failure: create_attrs())
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.failure_path(conn, :show, id))
 
       assert %{
-               "id" => id,
-               "description" => "some description",
-               "is_fixed" => true,
-               "name" => "some name"
+               "id" => ^id,
+               "description" => nil,
+               "isFixed" => true,
+               "name" => "some name",
+               "priority" => "moderate"
              } = json_response(conn, 200)["data"]
     end
 
@@ -63,10 +56,11 @@ defmodule VanadoBackendWeb.FailureControllerTest do
       conn = get(conn, Routes.failure_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "id" => ^id,
                "description" => "some updated description",
-               "is_fixed" => false,
-               "name" => "some updated name"
+               "isFixed" => false,
+               "name" => "some updated name which is more than 20 characters long",
+               "priority" => "high"
              } = json_response(conn, 200)["data"]
     end
 
@@ -90,7 +84,13 @@ defmodule VanadoBackendWeb.FailureControllerTest do
   end
 
   defp create_failure(_) do
-    failure = fixture(:failure)
+    failure = TestHelpers.create_failure()
     %{failure: failure}
+  end
+
+  defp create_attrs() do
+    machine = TestHelpers.create_machine()
+
+    Map.put(@create_attrs, :machine_id, machine.id)
   end
 end
