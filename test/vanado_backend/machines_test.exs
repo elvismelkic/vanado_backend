@@ -16,10 +16,16 @@ defmodule VanadoBackend.MachinesTest do
       assert Machines.list() == [machine]
     end
 
-    test "get!/1 returns the machine and its failures with given id" do
-      machine = TestHelpers.create_machine_with_failure()
+    test "get!/1 returns the machine with given id" do
+      machine = TestHelpers.create_machine()
 
       assert Machines.get!(machine.id) == machine
+    end
+
+    test "get_with_failures!/1 returns the machine and its failures with given id" do
+      machine = TestHelpers.create_machine_with_failure()
+
+      assert Machines.get_with_failures!(machine.id) == machine
     end
 
     test "create/1 with valid data creates a machine" do
