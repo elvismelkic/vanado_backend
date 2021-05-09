@@ -19,6 +19,7 @@ defmodule VanadoBackend.DataCase do
   using do
     quote do
       alias VanadoBackend.Repo
+      alias VanadoBackend.TestHelpers
 
       import Ecto
       import Ecto.Changeset
