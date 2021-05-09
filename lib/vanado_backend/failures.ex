@@ -4,8 +4,8 @@ defmodule VanadoBackend.Failures do
   """
 
   import Ecto.Query, warn: false
-  alias VanadoBackend.Repo
 
+  alias VanadoBackend.Repo
   alias VanadoBackend.Failures.Failure
 
   @doc """
