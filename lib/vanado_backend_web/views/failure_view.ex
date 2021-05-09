@@ -11,9 +11,12 @@ defmodule VanadoBackendWeb.FailureView do
   end
 
   def render("failure.json", %{failure: failure}) do
-    %{id: failure.id,
+    %{
+      id: failure.id,
       name: failure.name,
       description: failure.description,
-      is_fixed: failure.is_fixed}
+      is_fixed: failure.is_fixed,
+      priority: failure.priority
+    }
   end
 end
