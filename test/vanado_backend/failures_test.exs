@@ -6,8 +6,8 @@ defmodule VanadoBackend.FailuresTest do
   describe "failures" do
     alias VanadoBackend.Failures.Failure
 
-    @valid_attrs %{description: nil, is_fixed: true, name: "some name"}
-    @update_attrs %{description: nil, is_fixed: false, name: "some updated name"}
+    @valid_attrs %{description: nil, is_fixed: true, name: "some name", priority: :modrate}
+    @update_attrs %{description: nil, is_fixed: false, name: "some updated name", priority: :high}
     @invalid_attrs %{description: nil, is_fixed: nil, name: nil}
 
     test "list/0 returns all failures" do
@@ -23,14 +23,20 @@ defmodule VanadoBackend.FailuresTest do
     end
 
     test "create/1 with valid data creates a failure" do
-      assert {:ok, %Failure{} = failure} = Failures.create(@valid_attrs)
+      machine = TestHelpers.create_machine()
+
+      assert {:ok, %Failure{} = failure} = Failures.create(machine, @valid_attrs)
       assert failure.description == nil
       assert failure.is_fixed == true
       assert failure.name == "some name"
+      assert failure.priority == :moderate
+      assert failure.machine_id == machine.id
     end
 
     test "create/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Failures.create(@invalid_attrs)
+      machine = TestHelpers.create_machine()
+
+      assert {:error, %Ecto.Changeset{}} = Failures.create(machine, @invalid_attrs)
     end
 
     test "update/2 with valid data updates the failure" do
@@ -40,6 +46,7 @@ defmodule VanadoBackend.FailuresTest do
       assert failure.description == nil
       assert failure.is_fixed == false
       assert failure.name == "some updated name"
+      assert failure.priority == :high
     end
 
     test "update/2 with invalid data returns error changeset" do
