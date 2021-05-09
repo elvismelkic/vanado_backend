@@ -11,7 +11,7 @@ defmodule VanadoBackend.Failures do
   @doc """
   Returns the list of failures conditionally filtered by `is_fixed` field.
   """
-  def list(is_fixed) do
+  def list(is_fixed \\ nil) do
     Failure
     |> maybe_filter(is_fixed)
     |> select([f], f)
