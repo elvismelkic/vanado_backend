@@ -16,6 +16,7 @@ defmodule VanadoBackend.Failures do
     |> maybe_filter(is_fixed)
     |> select([f], f)
     |> Repo.all()
+    |> Repo.preload(:machine)
   end
 
   @doc """
