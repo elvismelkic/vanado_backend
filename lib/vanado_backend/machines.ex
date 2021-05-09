@@ -16,11 +16,18 @@ defmodule VanadoBackend.Machines do
   end
 
   @doc """
-  Gets a single machine with failures.
+  Gets a single machine.
 
   Raises `Ecto.NoResultsError` if the Machine does not exist.
   """
-  def get!(id), do: Machine |> Repo.get!(id) |> Repo.preload(:failures)
+  def get!(id), do: Machine |> Repo.get!(id)
+
+  @doc """
+  Gets a single machine with its failures.
+
+  Raises `Ecto.NoResultsError` if the Machine does not exist.
+  """
+  def get_with_failures!(id), do: Machine |> Repo.get!(id) |> Repo.preload(:failures)
 
   @doc """
   Creates a machine.
