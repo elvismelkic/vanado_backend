@@ -11,7 +11,7 @@ defmodule VanadoBackend.Machines do
   @doc """
   Returns the list of machines.
   """
-  def list_machines do
+  def list do
     Repo.all(Machine)
   end
 
@@ -20,12 +20,12 @@ defmodule VanadoBackend.Machines do
 
   Raises `Ecto.NoResultsError` if the Machine does not exist.
   """
-  def get_machine!(id), do: Machine |> Repo.get!(id) |> Repo.preload(:failures)
+  def get!(id), do: Machine |> Repo.get!(id) |> Repo.preload(:failures)
 
   @doc """
   Creates a machine.
   """
-  def create_machine(attrs \\ %{}) do
+  def create(attrs \\ %{}) do
     %Machine{}
     |> Machine.changeset(attrs)
     |> Repo.insert()
@@ -34,7 +34,7 @@ defmodule VanadoBackend.Machines do
   @doc """
   Updates a machine.
   """
-  def update_machine(%Machine{} = machine, attrs) do
+  def update(%Machine{} = machine, attrs) do
     machine
     |> Machine.changeset(attrs)
     |> Repo.update()
@@ -43,14 +43,14 @@ defmodule VanadoBackend.Machines do
   @doc """
   Deletes a machine.
   """
-  def delete_machine(%Machine{} = machine) do
+  def delete(%Machine{} = machine) do
     Repo.delete(machine)
   end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking machine changes.
   """
-  def change_machine(%Machine{} = machine, attrs \\ %{}) do
+  def change(%Machine{} = machine, attrs \\ %{}) do
     Machine.changeset(machine, attrs)
   end
 end

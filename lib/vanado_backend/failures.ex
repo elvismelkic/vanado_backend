@@ -11,7 +11,7 @@ defmodule VanadoBackend.Failures do
   @doc """
   Returns the list of failures conditionally filtered by `is_fixed` field.
   """
-  def list_failures(is_fixed) do
+  def list(is_fixed) do
     Failure
     |> maybe_filter(is_fixed)
     |> select([f], f)
@@ -21,12 +21,12 @@ defmodule VanadoBackend.Failures do
   @doc """
   Gets a single failure.
   """
-  def get_failure!(id), do: Repo.get!(Failure, id)
+  def get!(id), do: Repo.get!(Failure, id)
 
   @doc """
   Creates a failure.
   """
-  def create_failure(attrs \\ %{}) do
+  def create(attrs \\ %{}) do
     %Failure{}
     |> Failure.changeset(attrs)
     |> Repo.insert()
@@ -35,7 +35,7 @@ defmodule VanadoBackend.Failures do
   @doc """
   Updates a failure.
   """
-  def update_failure(%Failure{} = failure, attrs) do
+  def update(%Failure{} = failure, attrs) do
     failure
     |> Failure.changeset(attrs)
     |> Repo.update()
@@ -44,14 +44,14 @@ defmodule VanadoBackend.Failures do
   @doc """
   Deletes a failure.
   """
-  def delete_failure(%Failure{} = failure) do
+  def delete(%Failure{} = failure) do
     Repo.delete(failure)
   end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking failure changes.
   """
-  def change_failure(%Failure{} = failure, attrs \\ %{}) do
+  def change(%Failure{} = failure, attrs \\ %{}) do
     Failure.changeset(failure, attrs)
   end
 

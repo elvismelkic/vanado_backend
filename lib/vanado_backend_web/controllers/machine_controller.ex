@@ -7,13 +7,13 @@ defmodule VanadoBackendWeb.MachineController do
   action_fallback VanadoBackendWeb.FallbackController
 
   def index(conn, _params) do
-    machines = Machines.list_machines()
+    machines = Machines.list()
     render(conn, "index.json", machines: machines)
   end
 
   def create(conn, %{"machine" => machine_params}) do
-    with {:ok, %Machine{} = machine} <- Machines.create_machine(machine_params) do
-      machine = Machines.get_machine!(machine.id)
+    with {:ok, %Machine{} = machine} <- Machines.create(machine_params) do
+      machine = Machines.get!(machine.id)
 
       conn
       |> put_status(:created)
@@ -23,22 +23,22 @@ defmodule VanadoBackendWeb.MachineController do
   end
 
   def show(conn, %{"id" => id}) do
-    machine = Machines.get_machine!(id)
+    machine = Machines.get!(id)
     render(conn, "show.json", machine: machine)
   end
 
   def update(conn, %{"id" => id, "machine" => machine_params}) do
-    machine = Machines.get_machine!(id)
+    machine = Machines.get!(id)
 
-    with {:ok, %Machine{} = machine} <- Machines.update_machine(machine, machine_params) do
+    with {:ok, %Machine{} = machine} <- Machines.update(machine, machine_params) do
       render(conn, "show.json", machine: machine)
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    machine = Machines.get_machine!(id)
+    machine = Machines.get!(id)
 
-    with {:ok, %Machine{}} <- Machines.delete_machine(machine) do
+    with {:ok, %Machine{}} <- Machines.delete(machine) do
       send_resp(conn, :no_content, "")
     end
   end
