@@ -36,7 +36,8 @@ defmodule VanadoBackend.MachinesTest do
     end
 
     test "create/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Machines.create(@invalid_attrs)
+      assert {:error, changeset} = Machines.create(@invalid_attrs)
+      assert "can't be blank" in errors_on(changeset).name
     end
 
     test "update/2 with valid data updates the machine" do

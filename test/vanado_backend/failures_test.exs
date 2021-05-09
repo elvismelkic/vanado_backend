@@ -8,7 +8,7 @@ defmodule VanadoBackend.FailuresTest do
 
     @valid_attrs %{description: nil, is_fixed: true, name: "some name", priority: :moderate}
     @update_attrs %{description: nil, is_fixed: false, name: "some updated name", priority: :high}
-    @invalid_attrs %{description: nil, is_fixed: nil, name: nil}
+    @invalid_attrs %{description: nil, is_fixed: nil, name: nil, priority: nil, machine_id: nil}
 
     test "list/0 returns all failures" do
       failure = TestHelpers.create_failure()
@@ -36,7 +36,20 @@ defmodule VanadoBackend.FailuresTest do
     test "create/1 with invalid data returns error changeset" do
       machine = TestHelpers.create_machine()
 
-      assert {:error, %Ecto.Changeset{}} = Failures.create(machine, @invalid_attrs)
+      assert {:error, changeset} = Failures.create(machine, @invalid_attrs)
+      assert "can't be blank" in errors_on(changeset).name
+      assert "can't be blank" in errors_on(changeset).is_fixed
+      assert "can't be blank" in errors_on(changeset).priority
+      assert "can't be blank" in errors_on(changeset).machine_id
+    end
+
+    test "create/1 with name shorter than 20 characters and description returns error changeset" do
+      machine = TestHelpers.create_machine()
+      invalid_attrs = Map.put(@valid_attrs, :description, "some description")
+      message = "name has to be longer than 20 characters for description to be allowed"
+
+      assert {:error, changeset} = Failures.create(machine, invalid_attrs)
+      assert message in errors_on(changeset).name
     end
 
     test "update/2 with valid data updates the failure" do
