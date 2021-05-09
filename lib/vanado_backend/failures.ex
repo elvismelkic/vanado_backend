@@ -26,9 +26,8 @@ defmodule VanadoBackend.Failures do
   @doc """
   Creates a failure for machine.
   """
-  def create(machine, attrs \\ %{}) do
-    machine
-    |> Ecto.build_assoc(:failures)
+  def create(attrs \\ %{}) do
+    %Failure{}
     |> Failure.changeset(attrs)
     |> Repo.insert()
   end

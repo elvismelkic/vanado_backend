@@ -17,7 +17,11 @@ defmodule VanadoBackend.TestHelpers do
 
   def create_machine_with_failure do
     machine = create_machine()
-    {:ok, failure} = Failures.create(machine, @failure_attrs)
+
+    {:ok, failure} =
+      @failure_attrs
+      |> Map.merge(%{machine_id: machine.id})
+      |> Failures.create()
 
     machine |> Map.put(:failures, [failure])
   end
