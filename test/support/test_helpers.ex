@@ -25,4 +25,10 @@ defmodule VanadoBackend.TestHelpers do
 
     machine |> Map.put(:failures, [failure])
   end
+
+  def create_failure do
+    machine = create_machine_with_failure()
+
+    hd(machine.failures)
+  end
 end

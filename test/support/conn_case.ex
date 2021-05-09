@@ -25,6 +25,7 @@ defmodule VanadoBackendWeb.ConnCase do
       import VanadoBackendWeb.ConnCase
 
       alias VanadoBackendWeb.Router.Helpers, as: Routes
+      alias VanadoBackend.TestHelpers
 
       # The default endpoint for testing
       @endpoint VanadoBackendWeb.Endpoint
