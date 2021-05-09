@@ -6,7 +6,7 @@ defmodule VanadoBackend.FailuresTest do
   describe "failures" do
     alias VanadoBackend.Failures.Failure
 
-    @valid_attrs %{description: nil, is_fixed: true, name: "some name", priority: :modrate}
+    @valid_attrs %{description: nil, is_fixed: true, name: "some name", priority: :moderate}
     @update_attrs %{description: nil, is_fixed: false, name: "some updated name", priority: :high}
     @invalid_attrs %{description: nil, is_fixed: nil, name: nil}
 
