@@ -10,55 +10,52 @@ defmodule VanadoBackend.MachinesTest do
     @update_attrs %{name: "some updated name"}
     @invalid_attrs %{name: nil}
 
-    def machine_fixture(attrs \\ %{}) do
-      {:ok, machine} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Machines.create_machine()
+    test "list/0 returns all machines" do
+      machine = TestHelpers.create_machine()
 
-      machine
+      assert Machines.list() == [machine]
     end
 
-    test "list_machines/0 returns all machines" do
-      machine = machine_fixture()
-      assert Machines.list_machines() == [machine]
+    test "get!/1 returns the machine and its failures with given id" do
+      machine = TestHelpers.create_machine_with_failure()
+
+      assert Machines.get!(machine.id) == machine
     end
 
-    test "get_machine!/1 returns the machine with given id" do
-      machine = machine_fixture()
-      assert Machines.get_machine!(machine.id) == machine
-    end
-
-    test "create_machine/1 with valid data creates a machine" do
-      assert {:ok, %Machine{} = machine} = Machines.create_machine(@valid_attrs)
+    test "create/1 with valid data creates a machine" do
+      assert {:ok, %Machine{} = machine} = Machines.create(@valid_attrs)
       assert machine.name == "some name"
     end
 
-    test "create_machine/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Machines.create_machine(@invalid_attrs)
+    test "create/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Machines.create(@invalid_attrs)
     end
 
-    test "update_machine/2 with valid data updates the machine" do
-      machine = machine_fixture()
-      assert {:ok, %Machine{} = machine} = Machines.update_machine(machine, @update_attrs)
+    test "update/2 with valid data updates the machine" do
+      machine = TestHelpers.create_machine()
+
+      assert {:ok, %Machine{} = machine} = Machines.update(machine, @update_attrs)
       assert machine.name == "some updated name"
     end
 
-    test "update_machine/2 with invalid data returns error changeset" do
-      machine = machine_fixture()
-      assert {:error, %Ecto.Changeset{}} = Machines.update_machine(machine, @invalid_attrs)
-      assert machine == Machines.get_machine!(machine.id)
+    test "update/2 with invalid data returns error changeset" do
+      machine = TestHelpers.create_machine()
+
+      assert {:error, %Ecto.Changeset{}} = Machines.update(machine, @invalid_attrs)
+      assert machine == Machines.get!(machine.id)
     end
 
-    test "delete_machine/1 deletes the machine" do
-      machine = machine_fixture()
-      assert {:ok, %Machine{}} = Machines.delete_machine(machine)
-      assert_raise Ecto.NoResultsError, fn -> Machines.get_machine!(machine.id) end
+    test "delete/1 deletes the machine" do
+      machine = TestHelpers.create_machine()
+
+      assert {:ok, %Machine{}} = Machines.delete(machine)
+      assert_raise Ecto.NoResultsError, fn -> Machines.get!(machine.id) end
     end
 
-    test "change_machine/1 returns a machine changeset" do
-      machine = machine_fixture()
-      assert %Ecto.Changeset{} = Machines.change_machine(machine)
+    test "change/1 returns a machine changeset" do
+      machine = TestHelpers.create_machine()
+
+      assert %Ecto.Changeset{} = Machines.change(machine)
     end
   end
 end
