@@ -33,6 +33,21 @@ defmodule VanadoBackend.FailuresTest do
       assert failure.machine_id == machine.id
     end
 
+    test "create/1 with name longer than 20 characters and description creates a failure" do
+      machine = TestHelpers.create_machine()
+
+      name_and_desc = %{
+        name: "some extra long name with more than 20 characters",
+        description: "some description"
+      }
+
+      valid_attrs = Map.merge(@valid_attrs, name_and_desc)
+
+      assert {:ok, %Failure{} = failure} = Failures.create(machine, valid_attrs)
+      assert failure.description == "some description"
+      assert failure.name == "some extra long name with more than 20 characters"
+    end
+
     test "create/1 with invalid data returns error changeset" do
       machine = TestHelpers.create_machine()
 
