@@ -24,10 +24,11 @@ defmodule VanadoBackend.Failures do
   def get!(id), do: Repo.get!(Failure, id)
 
   @doc """
-  Creates a failure.
+  Creates a failure for machine.
   """
-  def create(attrs \\ %{}) do
-    %Failure{}
+  def create(machine, attrs \\ %{}) do
+    machine
+    |> Ecto.build_assoc(:failures)
     |> Failure.changeset(attrs)
     |> Repo.insert()
   end
