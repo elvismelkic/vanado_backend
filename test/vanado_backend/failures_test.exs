@@ -11,7 +11,7 @@ defmodule VanadoBackend.FailuresTest do
     @invalid_attrs %{description: nil, is_fixed: nil, name: nil, priority: nil, machine_id: nil}
 
     test "list/0 returns all failures" do
-      failure = TestHelpers.create_failure()
+      failure = TestHelpers.create_failure_with_machine()
 
       assert Failures.list() == [failure]
     end
