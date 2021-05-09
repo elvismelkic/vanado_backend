@@ -13,7 +13,7 @@ defmodule VanadoBackendWeb.MachineController do
 
   def create(conn, %{"machine" => machine_params}) do
     with {:ok, %Machine{} = machine} <- Machines.create(machine_params) do
-      machine = Machines.get!(machine.id)
+      machine = Machines.get_with_failures!(machine.id)
 
       conn
       |> put_status(:created)
@@ -23,14 +23,15 @@ defmodule VanadoBackendWeb.MachineController do
   end
 
   def show(conn, %{"id" => id}) do
-    machine = Machines.get!(id)
+    machine = Machines.get_with_failures!(id)
     render(conn, "show.json", machine: machine)
   end
 
   def update(conn, %{"id" => id, "machine" => machine_params}) do
-    machine = Machines.get!(id)
+    %Machine{failures: failures} = machine = Machines.get_with_failures!(id)
 
     with {:ok, %Machine{} = machine} <- Machines.update(machine, machine_params) do
+      machine = Map.put(machine, :failures, failures)
       render(conn, "show.json", machine: machine)
     end
   end
