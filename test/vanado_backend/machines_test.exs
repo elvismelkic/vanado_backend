@@ -1,6 +1,7 @@
 defmodule VanadoBackend.MachinesTest do
   use VanadoBackend.DataCase
 
+  alias VanadoBackend.Failures
   alias VanadoBackend.Machines
 
   describe "machines" do
@@ -26,6 +27,7 @@ defmodule VanadoBackend.MachinesTest do
       machine = TestHelpers.create_machine_with_failure()
 
       assert Machines.get_with_failures!(machine.id) == machine
+      assert length(machine.failures) == 1
     end
 
     test "create/1 with valid data creates a machine" do
@@ -56,6 +58,13 @@ defmodule VanadoBackend.MachinesTest do
 
       assert {:ok, %Machine{}} = Machines.delete(machine)
       assert_raise Ecto.NoResultsError, fn -> Machines.get!(machine.id) end
+    end
+
+    test "machine's failures are deleted when machine is deleted" do
+      machine = TestHelpers.create_machine_with_failure()
+      Machines.delete(machine)
+
+      assert Failures.list() == []
     end
 
     test "change/1 returns a machine changeset" do
