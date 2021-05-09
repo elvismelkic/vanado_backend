@@ -1,21 +1,11 @@
 defmodule VanadoBackendWeb.MachineControllerTest do
   use VanadoBackendWeb.ConnCase
 
-  alias VanadoBackend.Machines
   alias VanadoBackend.Machines.Machine
 
-  @create_attrs %{
-    name: "some name"
-  }
-  @update_attrs %{
-    name: "some updated name"
-  }
+  @create_attrs %{name: "some name"}
+  @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
-
-  def fixture(:machine) do
-    {:ok, machine} = Machines.create_machine(@create_attrs)
-    machine
-  end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -36,7 +26,7 @@ defmodule VanadoBackendWeb.MachineControllerTest do
       conn = get(conn, Routes.machine_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "id" => ^id,
                "name" => "some name"
              } = json_response(conn, 200)["data"]
     end
@@ -57,7 +47,7 @@ defmodule VanadoBackendWeb.MachineControllerTest do
       conn = get(conn, Routes.machine_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "id" => ^id,
                "name" => "some updated name"
              } = json_response(conn, 200)["data"]
     end
@@ -82,7 +72,8 @@ defmodule VanadoBackendWeb.MachineControllerTest do
   end
 
   defp create_machine(_) do
-    machine = fixture(:machine)
+    machine = TestHelpers.create_machine()
+
     %{machine: machine}
   end
 end
