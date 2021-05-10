@@ -2,6 +2,7 @@ defmodule VanadoBackend.Failures.Failure do
   use Ecto.Schema
   import Ecto.Changeset
   import EctoEnum
+  alias VanadoBackend.Files.File
   alias VanadoBackend.Machines.Machine
 
   defenum(PriorityEnum, :priority, [:low, :moderate, :high])
@@ -13,6 +14,7 @@ defmodule VanadoBackend.Failures.Failure do
     field :priority, PriorityEnum
 
     belongs_to :machine, Machine
+    has_many :files, File
 
     timestamps()
   end
