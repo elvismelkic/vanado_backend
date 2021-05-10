@@ -17,7 +17,7 @@ defmodule VanadoBackendWeb.FailureView do
   def render("failure_with_machine.json", %{failure: failure}) do
     failure
     |> failure_basic_fields()
-    |> Map.merge(%{machine: failure.machine})
+    |> Map.merge(%{machine: render_one(failure.machine, MachineView, "machine.json")})
   end
 
   defp failure_basic_fields(failure) do
