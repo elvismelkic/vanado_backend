@@ -11,6 +11,7 @@ defmodule VanadoBackendWeb.Router do
 
     resources "/machines", MachineController, except: [:new, :edit]
     resources "/failures", FailureController, except: [:new, :edit]
+    resources "/files", FileController, except: [:new, :edit]
   end
 
   # Enables LiveDashboard only for development
