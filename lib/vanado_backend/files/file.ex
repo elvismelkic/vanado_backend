@@ -15,7 +15,8 @@ defmodule VanadoBackend.Files.File do
   @doc false
   def changeset(file, attrs) do
     file
-    |> cast(attrs, [:name, :type])
-    |> validate_required([:name, :type])
+    |> cast(attrs, [:name, :type, :failure_id])
+    |> validate_required([:name, :type, :failure_id])
+    |> unique_constraint([:name, :failure_id])
   end
 end
