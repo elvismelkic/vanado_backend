@@ -21,7 +21,7 @@ defmodule VanadoBackendWeb.Endpoint do
   # You should set gzip to true if you are running phx.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/",
+    at: "/files",
     from: :vanado_backend,
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
@@ -45,7 +45,7 @@ defmodule VanadoBackendWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
-  plug Accent.Plug.Request
+  plug VanadoBackendWeb.Plugs.Case
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
