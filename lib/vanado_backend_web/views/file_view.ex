@@ -11,8 +11,6 @@ defmodule VanadoBackendWeb.FileView do
   end
 
   def render("file.json", %{file: file}) do
-    %{id: file.id,
-      name: file.name,
-      type: file.type}
+    %{id: file.id, name: file.name, type: file.type, failure_id: file.failure_id}
   end
 end

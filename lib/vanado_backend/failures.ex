@@ -22,7 +22,7 @@ defmodule VanadoBackend.Failures do
   @doc """
   Gets a single failure.
   """
-  def get!(id), do: Repo.get!(Failure, id)
+  def get!(id), do: Failure |> Repo.get!(id) |> Repo.preload(:files)
 
   @doc """
   Creates a failure for machine.

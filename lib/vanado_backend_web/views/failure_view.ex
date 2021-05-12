@@ -1,6 +1,8 @@
 defmodule VanadoBackendWeb.FailureView do
   use VanadoBackendWeb, :view
   alias VanadoBackendWeb.FailureView
+  alias VanadoBackendWeb.FileView
+  alias VanadoBackendWeb.MachineView
 
   def render("index.json", %{failures: failures}) do
     %{data: render_many(failures, FailureView, "failure_with_machine.json")}
@@ -11,7 +13,9 @@ defmodule VanadoBackendWeb.FailureView do
   end
 
   def render("failure.json", %{failure: failure}) do
-    failure_basic_fields(failure)
+    failure
+    |> failure_basic_fields()
+    |> Map.merge(%{files: render_many(failure.files, FileView, "file.json")})
   end
 
   def render("failure_with_machine.json", %{failure: failure}) do
