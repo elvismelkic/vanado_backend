@@ -15,13 +15,13 @@ defmodule VanadoBackendWeb.FailureView do
   def render("failure.json", %{failure: failure}) do
     failure
     |> failure_basic_fields()
-    |> Map.merge(%{files: render_many(failure.files, FileView, "file.json")})
+    |> Map.put(:files, render_many(failure.files, FileView, "file.json"))
   end
 
   def render("failure_with_machine.json", %{failure: failure}) do
     failure
     |> failure_basic_fields()
-    |> Map.merge(%{machine: render_one(failure.machine, MachineView, "machine.json")})
+    |> Map.put(:machine, render_one(failure.machine, MachineView, "machine.json"))
   end
 
   defp failure_basic_fields(failure) do
