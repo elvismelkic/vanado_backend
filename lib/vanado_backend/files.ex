@@ -19,13 +19,6 @@ defmodule VanadoBackend.Files do
   end
 
   @doc """
-  Gets a single file.
-
-  Raises `Ecto.NoResultsError` if the File does not exist.
-  """
-  def get!(id), do: VanadoFile |> Repo.get!(id)
-
-  @doc """
   Creates a file.
   """
   def create(attrs \\ %{}) do
@@ -58,7 +51,9 @@ defmodule VanadoBackend.Files do
   @doc """
   Deletes a file.
   """
-  def delete(%VanadoFile{name: name, failure_id: failure_id} = file) do
+  def delete(id) do
+    %VanadoFile{name: name, failure_id: failure_id} = file = get!(id)
+
     Repo.transaction(fn repo ->
       file
       |> repo.delete()
@@ -79,4 +74,6 @@ defmodule VanadoBackend.Files do
   def change(%VanadoFile{} = file, attrs \\ %{}) do
     VanadoFile.changeset(file, attrs)
   end
+
+  defp get!(id), do: VanadoFile |> Repo.get!(id)
 end

@@ -14,9 +14,7 @@ defmodule VanadoBackendWeb.FileController do
   end
 
   def delete(conn, %{"id" => id}) do
-    file = Files.get!(id)
-
-    with {:ok, files} <- Files.delete(file) do
+    with {:ok, files} <- Files.delete(id) do
       conn
       |> put_status(:ok)
       |> render("index.json", files: files)
