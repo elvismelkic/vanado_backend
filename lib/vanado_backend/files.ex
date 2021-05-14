@@ -9,6 +9,16 @@ defmodule VanadoBackend.Files do
   alias VanadoBackend.Files.File, as: VanadoFile
 
   @doc """
+  Returns the list of failure's files.
+  """
+  def list_for_failure(failure_id) do
+    VanadoFile
+    |> where([f], f.failure_id == ^failure_id)
+    |> select([f], f)
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single file.
 
   Raises `Ecto.NoResultsError` if the File does not exist.
@@ -29,19 +39,23 @@ defmodule VanadoBackend.Files do
       path: attr_files.path
     }
 
-    %VanadoFile{}
-    |> VanadoFile.changeset(files)
-    |> Repo.insert()
-    |> case do
-      {:ok, file} ->
-        File.mkdir_p("./priv/static/failure_#{file.failure_id}/")
-        File.cp(files.path, "./priv/static/failure_#{file.failure_id}/#{file.name}")
+    Repo.transaction(fn repo ->
+      %VanadoFile{}
+      |> VanadoFile.changeset(files)
+      |> repo.insert()
+      |> case do
+        {:ok, file} ->
+          File.mkdir_p("./priv/static/failure_#{file.failure_id}/")
+          File.cp(files.path, "./priv/static/failure_#{file.failure_id}/#{file.name}")
 
-        {:ok, file}
+          failure_files = list_for_failure(failure_id)
 
-      error ->
-        error
-    end
+          {:ok, failure_files}
+
+        {:error, changeset} ->
+          repo.rollback(changeset)
+      end
+    end)
   end
 
   @doc """
