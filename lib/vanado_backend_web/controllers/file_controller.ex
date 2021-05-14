@@ -6,8 +6,8 @@ defmodule VanadoBackendWeb.FileController do
 
   action_fallback VanadoBackendWeb.FallbackController
 
-  def create(conn, %{"file" => file_params}) do
-    with {:ok, %File{} = file} <- Files.create(file_params) do
+  def create(conn, params) do
+    with {:ok, %File{} = file} <- Files.create(params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.file_path(conn, :show, file))
