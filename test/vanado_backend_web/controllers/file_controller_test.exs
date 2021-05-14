@@ -11,7 +11,7 @@ defmodule VanadoBackendWeb.FileControllerTest do
   @invalid_attrs %{name: nil, type: nil}
 
   def fixture(:file) do
-    {:ok, file} = Files.create_file(@create_attrs)
+    {:ok, file} = Files.create(@create_attrs)
     file
   end
 
