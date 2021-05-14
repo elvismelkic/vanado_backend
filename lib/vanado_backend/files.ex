@@ -61,8 +61,22 @@ defmodule VanadoBackend.Files do
   @doc """
   Deletes a file.
   """
-  def delete(%VanadoFile{} = file) do
-    Repo.delete(file)
+  def delete(%VanadoFile{name: name, failure_id: failure_id} = file) do
+    Repo.transaction(fn repo ->
+      file
+      |> repo.delete()
+      |> case do
+        {:ok, _file} ->
+          File.rm("./priv/static/failure_#{failure_id}/#{name}")
+
+          failure_files = list_for_failure(failure_id)
+
+          {:ok, failure_files}
+
+        {:error, changeset} ->
+          repo.rollback(changeset)
+      end
+    end)
   end
 
   @doc """
