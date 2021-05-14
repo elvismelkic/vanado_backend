@@ -24,7 +24,7 @@ defmodule VanadoBackendWeb.Endpoint do
     at: "/files",
     from: :vanado_backend,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only_matching: ~w(failure)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
