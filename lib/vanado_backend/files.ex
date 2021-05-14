@@ -47,10 +47,7 @@ defmodule VanadoBackend.Files do
         {:ok, file} ->
           File.mkdir_p!("./priv/static/failure_#{file.failure_id}/")
           File.cp!(files.path, "./priv/static/failure_#{file.failure_id}/#{file.name}")
-
-          failure_files = list_for_failure(failure_id)
-
-          {:ok, failure_files}
+          list_for_failure(failure_id)
 
         {:error, changeset} ->
           repo.rollback(changeset)
@@ -68,10 +65,7 @@ defmodule VanadoBackend.Files do
       |> case do
         {:ok, _file} ->
           File.rm!("./priv/static/failure_#{failure_id}/#{name}")
-
-          failure_files = list_for_failure(failure_id)
-
-          {:ok, failure_files}
+          list_for_failure(failure_id)
 
         {:error, changeset} ->
           repo.rollback(changeset)
