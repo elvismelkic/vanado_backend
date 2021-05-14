@@ -6,10 +6,6 @@ defmodule VanadoBackendWeb.FileView do
     %{data: render_many(files, FileView, "file.json")}
   end
 
-  def render("show.json", %{file: file}) do
-    %{data: render_one(file, FileView, "file.json")}
-  end
-
   def render("file.json", %{file: file}) do
     %{id: file.id, name: file.name, type: file.type, failure_id: file.failure_id}
   end
