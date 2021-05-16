@@ -29,11 +29,17 @@ defmodule VanadoBackend.FilesTest do
     end
 
     test "create/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Files.create(@invalid_attrs)
+      failure = TestHelpers.create_failure()
+      file_attrs = TestHelpers.file_upload_struct(@invalid_attrs)
+      attrs = %{"failure" => failure.id, "files" => file_attrs}
+
+      assert {:error, %Ecto.Changeset{}} = Files.create(attrs)
     end
 
     test "delete/1 deletes the file" do
       file = TestHelpers.create_file()
+
+      stub(VanadoBackend.Api.MockFile, :delete!, fn _path -> :ok end)
 
       assert {:ok, files} = Files.delete(file.id)
       assert files == []
