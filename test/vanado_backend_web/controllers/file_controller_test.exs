@@ -5,15 +5,11 @@ defmodule VanadoBackendWeb.FileControllerTest do
   alias VanadoBackend.Files.File
 
   @create_attrs %{
-    name: "some name",
-    type: "some type"
+    filename: "some name",
+    content_type: "some type",
+    path: "some/test/path"
   }
   @invalid_attrs %{name: nil, type: nil}
-
-  def fixture(:file) do
-    {:ok, file} = Files.create(@create_attrs)
-    file
-  end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -21,7 +17,10 @@ defmodule VanadoBackendWeb.FileControllerTest do
 
   describe "create file" do
     test "renders file when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.file_path(conn, :create), file: @create_attrs)
+      failure = TestHelpers.create_failure()
+      attrs = %{"failure" => failure.id, "files" => @create_attrs}
+
+      conn = post(conn, Routes.file_path(conn, :create), attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.file_path(conn, :show, id))
@@ -53,7 +52,7 @@ defmodule VanadoBackendWeb.FileControllerTest do
   end
 
   defp create_file(_) do
-    file = fixture(:file)
+    file = TestHelpers.create_file()
     %{file: file}
   end
 end
