@@ -36,7 +36,8 @@ defmodule VanadoBackendWeb.FailureControllerTest do
                "description" => nil,
                "isFixed" => true,
                "name" => "some name",
-               "priority" => "moderate"
+               "priority" => "moderate",
+               "files" => []
              } = json_response(conn, 200)["data"]
     end
 

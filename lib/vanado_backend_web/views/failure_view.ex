@@ -12,7 +12,13 @@ defmodule VanadoBackendWeb.FailureView do
     %{data: render_one(failure, FailureView, "failure.json")}
   end
 
-  def render("failure.json", %{failure: failure}) do
+  def render("show_with_files.json", %{failure: failure}) do
+    %{data: render_one(failure, FailureView, "failure_with_files.json")}
+  end
+
+  def render("failure.json", %{failure: failure}), do: failure_basic_fields(failure)
+
+  def render("failure_with_files.json", %{failure: failure}) do
     failure
     |> failure_basic_fields()
     |> Map.put(:files, render_many(failure.files, FileView, "file.json"))
