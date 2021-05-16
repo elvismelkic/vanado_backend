@@ -21,18 +21,18 @@ defmodule VanadoBackend.TestHelpers do
   def create_machine_with_failure do
     machine = create_machine()
 
-    {:ok, failure} =
+    {:ok, _failure} =
       @failure_attrs
       |> Map.put(:machine_id, machine.id)
       |> Failures.create()
 
-    machine |> Map.put(:failures, [failure])
+    machine |> Repo.preload(:failures)
   end
 
   def create_failure do
     machine = create_machine_with_failure()
 
-    hd(machine.failures)
+    machine.failures |> hd() |> Repo.preload(:files)
   end
 
   def create_failure_with_machine do
