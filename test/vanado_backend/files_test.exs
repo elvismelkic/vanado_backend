@@ -1,8 +1,9 @@
 defmodule VanadoBackend.FilesTest do
   use VanadoBackend.DataCase
 
+  import Mox
+
   alias VanadoBackend.Files
-  alias VanadoBackend.Files.File
   alias VanadoBackend.Repo
 
   describe "files" do
@@ -12,6 +13,9 @@ defmodule VanadoBackend.FilesTest do
     @invalid_attrs %{name: nil, type: nil}
 
     test "create/1 with valid data creates a file" do
+      stub(VanadoBackend.Api.MockFile, :create_folder_with_parents!, fn _path -> :ok end)
+      stub(VanadoBackend.Api.MockFile, :create_file!, fn _source, _destination -> :ok end)
+
       {:ok, %File{} = file} = Files.create(@valid_attrs)
       db_file = Repo.get!(File, file.id)
 

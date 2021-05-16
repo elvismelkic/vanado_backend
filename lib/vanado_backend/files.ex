@@ -9,6 +9,8 @@ defmodule VanadoBackend.Files do
 
   alias VanadoBackend.Files.File, as: VanadoFile
 
+  @file_module Application.get_env(:vanado_backend, :file, File)
+
   @doc """
   Returns the list of failure's files.
   """
@@ -39,8 +41,8 @@ defmodule VanadoBackend.Files do
       |> repo.insert()
       |> case do
         {:ok, file} ->
-          File.create_folder_with_parents!("failure_#{file.failure_id}/")
-          File.create_file!(files.path, "failure_#{file.failure_id}/#{file.name}")
+          @file_module.create_folder_with_parents!("failure_#{file.failure_id}/")
+          @file_module.create_file!(files.path, "failure_#{file.failure_id}/#{file.name}")
           list_for_failure(failure_id)
 
         {:error, changeset} ->
@@ -60,7 +62,7 @@ defmodule VanadoBackend.Files do
       |> repo.delete()
       |> case do
         {:ok, _file} ->
-          File.delete!("failure_#{failure_id}/#{name}")
+          @file_module.delete!("failure_#{failure_id}/#{name}")
           list_for_failure(failure_id)
 
         {:error, changeset} ->

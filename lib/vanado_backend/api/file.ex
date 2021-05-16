@@ -3,6 +3,10 @@ defmodule VanadoBackend.Api.File do
   The File API. Wrapper around Elixir's File module.
   """
 
+  @callback create_folder_with_parents!(String.t()) :: :ok
+  @callback create_file!(String.t(), String.t()) :: :ok
+  @callback delete!(String.t()) :: :ok
+
   @root_path "./priv/static/"
 
   @doc """

@@ -20,3 +20,5 @@ config :vanado_backend, VanadoBackendWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :vanado_backend, :file, VanadoBackend.Api.MockFile
