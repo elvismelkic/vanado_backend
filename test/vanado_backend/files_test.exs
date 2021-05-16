@@ -13,15 +13,19 @@ defmodule VanadoBackend.FilesTest do
     @invalid_attrs %{name: nil, type: nil}
 
     test "create/1 with valid data creates a file" do
+      failure = TestHelpers.create_failure()
+      file_attrs = TestHelpers.file_upload_struct(@valid_attrs)
+      attrs = %{"failure" => failure.id, "files" => file_attrs}
+
       stub(VanadoBackend.Api.MockFile, :create_folder_with_parents!, fn _path -> :ok end)
       stub(VanadoBackend.Api.MockFile, :create_file!, fn _source, _destination -> :ok end)
 
-      {:ok, %File{} = file} = Files.create(@valid_attrs)
+      assert {:ok, [file]} = Files.create(attrs)
+
       db_file = Repo.get!(File, file.id)
 
-      assert file == db_file
-      assert file.name == "some name"
-      assert file.type == "some type"
+      assert db_file.name == "some name"
+      assert db_file.type == "some type"
     end
 
     test "create/1 with invalid data returns error changeset" do
