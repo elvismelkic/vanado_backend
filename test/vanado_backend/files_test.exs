@@ -2,6 +2,7 @@ defmodule VanadoBackend.FilesTest do
   use VanadoBackend.DataCase
 
   alias VanadoBackend.Files
+  alias VanadoBackend.Files.File
   alias VanadoBackend.Repo
 
   describe "files" do
@@ -12,7 +13,7 @@ defmodule VanadoBackend.FilesTest do
 
     test "create/1 with valid data creates a file" do
       {:ok, %File{} = file} = Files.create(@valid_attrs)
-      db_file = Repo.get!(file.id)
+      db_file = Repo.get!(File, file.id)
 
       assert file == db_file
       assert file.name == "some name"
