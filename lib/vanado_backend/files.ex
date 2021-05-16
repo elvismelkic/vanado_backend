@@ -5,6 +5,7 @@ defmodule VanadoBackend.Files do
 
   import Ecto.Query, warn: false
   alias VanadoBackend.Repo
+  alias VanadoBackend.Api.File
 
   alias VanadoBackend.Files.File, as: VanadoFile
 
@@ -38,8 +39,8 @@ defmodule VanadoBackend.Files do
       |> repo.insert()
       |> case do
         {:ok, file} ->
-          File.mkdir_p!("./priv/static/failure_#{file.failure_id}/")
-          File.cp!(files.path, "./priv/static/failure_#{file.failure_id}/#{file.name}")
+          File.create_folder_with_parents!("failure_#{file.failure_id}/")
+          File.create_file!(files.path, "failure_#{file.failure_id}/#{file.name}")
           list_for_failure(failure_id)
 
         {:error, changeset} ->
@@ -59,7 +60,7 @@ defmodule VanadoBackend.Files do
       |> repo.delete()
       |> case do
         {:ok, _file} ->
-          File.rm!("./priv/static/failure_#{failure_id}/#{name}")
+          File.delete!("failure_#{failure_id}/#{name}")
           list_for_failure(failure_id)
 
         {:error, changeset} ->
