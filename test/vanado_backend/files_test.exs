@@ -2,6 +2,7 @@ defmodule VanadoBackend.FilesTest do
   use VanadoBackend.DataCase
 
   alias VanadoBackend.Files
+  alias VanadoBackend.Repo
 
   describe "files" do
     alias VanadoBackend.Files.File
@@ -9,17 +10,11 @@ defmodule VanadoBackend.FilesTest do
     @valid_attrs %{name: "some name", type: "some type"}
     @invalid_attrs %{name: nil, type: nil}
 
-    def file_fixture(attrs \\ %{}) do
-      {:ok, file} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Files.create()
-
-      file
-    end
-
     test "create/1 with valid data creates a file" do
-      assert {:ok, %File{} = file} = Files.create(@valid_attrs)
+      {:ok, %File{} = file} = Files.create(@valid_attrs)
+      db_file = Repo.get!(file.id)
+
+      assert file == db_file
       assert file.name == "some name"
       assert file.type == "some type"
     end
@@ -29,13 +24,15 @@ defmodule VanadoBackend.FilesTest do
     end
 
     test "delete/1 deletes the file" do
-      file = file_fixture()
+      file = TestHelpers.create_file()
+
       assert {:ok, files} = Files.delete(file.id)
       assert files == []
     end
 
     test "change_file/1 returns a file changeset" do
-      file = file_fixture()
+      file = TestHelpers.create_file()
+
       assert %Ecto.Changeset{} = Files.change(file)
     end
   end

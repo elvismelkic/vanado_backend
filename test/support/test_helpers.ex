@@ -4,11 +4,13 @@ defmodule VanadoBackend.TestHelpers do
   """
 
   alias VanadoBackend.Failures
+  alias VanadoBackend.Files.File
   alias VanadoBackend.Machines
   alias VanadoBackend.Repo
 
   @machine_attrs %{name: "test machine"}
   @failure_attrs %{name: "test failure", description: nil, is_fixed: false, priority: :moderate}
+  @file_attrs %{name: "test file", type: "image/jpg"}
 
   def create_machine do
     {:ok, machine} = Machines.create(@machine_attrs)
@@ -37,5 +39,16 @@ defmodule VanadoBackend.TestHelpers do
     machine = create_machine_with_failure()
 
     machine.failures |> hd() |> Repo.preload(:machine)
+  end
+
+  def create_file do
+    failure = create_failure()
+
+    file =
+      %File{}
+      |> File.changeset(Map.put(@file_attrs, :failure_id, failure.id))
+      |> Repo.insert!()
+
+    file
   end
 end
