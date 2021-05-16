@@ -52,7 +52,7 @@ defmodule VanadoBackend.TestHelpers do
     file
   end
 
-  def file_upload_struct(attrs \\ %{}) do
+  def file_upload_struct(attrs) do
     %Plug.Upload{
       content_type: attrs.type,
       filename: attrs.name,
