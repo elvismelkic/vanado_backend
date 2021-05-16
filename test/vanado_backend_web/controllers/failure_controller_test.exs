@@ -70,6 +70,24 @@ defmodule VanadoBackendWeb.FailureControllerTest do
       conn = put(conn, Routes.failure_path(conn, :update, failure), failure: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
+
+    test "renders failure with changed fixed status", %{
+      conn: conn,
+      failure: %Failure{id: id} = failure
+    } do
+      conn = patch(conn, Routes.failure_path(conn, :update, failure), id: failure.id)
+      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+
+      conn = get(conn, Routes.failure_path(conn, :show, id))
+      response_data = json_response(conn, 200)["data"]
+
+      assert response_data["id"] == id
+      assert response_data["isFixed"] == !failure.is_fixed
+      assert response_data["description"] == failure.description
+      assert response_data["name"] == failure.name
+      assert response_data["priority"] == Atom.to_string(failure.priority)
+      assert response_data["files"] == []
+    end
   end
 
   describe "delete failure" do
