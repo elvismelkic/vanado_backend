@@ -45,7 +45,8 @@ defmodule VanadoBackend.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
       {:ecto_enum, "~> 1.4"},
-      {:accent, "~> 1.1"}
+      {:accent, "~> 1.1"},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 
