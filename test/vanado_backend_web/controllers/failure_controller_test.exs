@@ -61,7 +61,8 @@ defmodule VanadoBackendWeb.FailureControllerTest do
                "description" => "some updated description",
                "isFixed" => false,
                "name" => "some updated name which is more than 20 characters long",
-               "priority" => "high"
+               "priority" => "high",
+               "files" => []
              } = json_response(conn, 200)["data"]
     end
 
