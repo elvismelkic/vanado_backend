@@ -26,7 +26,9 @@ defmodule VanadoBackendWeb.FailureControllerTest do
 
   describe "create failure" do
     test "renders failure when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.failure_path(conn, :create), failure: create_attrs())
+      create_attrs = @create_attrs |> add_machine_id()
+      conn = post(conn, Routes.failure_path(conn, :create), failure: create_attrs)
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.failure_path(conn, :show, id))
@@ -51,7 +53,9 @@ defmodule VanadoBackendWeb.FailureControllerTest do
     setup [:create_failure]
 
     test "renders failure when data is valid", %{conn: conn, failure: %Failure{id: id} = failure} do
-      conn = put(conn, Routes.failure_path(conn, :update, failure), failure: @update_attrs)
+      update_attrs = Map.put(@update_attrs, :machine_id, failure.machine_id)
+      conn = put(conn, Routes.failure_path(conn, :update, failure), failure: update_attrs)
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.failure_path(conn, :show, id))
@@ -108,9 +112,9 @@ defmodule VanadoBackendWeb.FailureControllerTest do
     %{failure: failure}
   end
 
-  defp create_attrs() do
+  defp add_machine_id(attrs) do
     machine = TestHelpers.create_machine()
 
-    Map.put(@create_attrs, :machine_id, machine.id)
+    Map.put(attrs, :machine_id, machine.id)
   end
 end
