@@ -4,6 +4,7 @@ defmodule VanadoBackend.Machines.Machine do
   alias VanadoBackend.Failures.Failure
 
   @allowed_types %{name: :string}
+  @attrs ~w/name/a
 
   schema "machines" do
     field :name, :string
@@ -16,15 +17,15 @@ defmodule VanadoBackend.Machines.Machine do
   @doc false
   def changeset(machine, attrs) do
     machine
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, @attrs)
+    |> validate_required(@attrs)
     |> unique_constraint(:name)
   end
 
   @doc false
   def validate(data) do
     {data, @allowed_types}
-    |> cast(data, [:name])
-    |> validate_required([:name])
+    |> cast(data, @attrs)
+    |> validate_required(@attrs)
   end
 end
