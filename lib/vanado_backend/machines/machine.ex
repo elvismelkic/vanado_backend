@@ -3,6 +3,8 @@ defmodule VanadoBackend.Machines.Machine do
   import Ecto.Changeset
   alias VanadoBackend.Failures.Failure
 
+  @allowed_types %{name: :string}
+
   schema "machines" do
     field :name, :string
 
@@ -17,5 +19,12 @@ defmodule VanadoBackend.Machines.Machine do
     |> cast(attrs, [:name])
     |> validate_required([:name])
     |> unique_constraint(:name)
+  end
+
+  @doc false
+  def validate(data) do
+    {data, @allowed_types}
+    |> cast(data, [:name])
+    |> validate_required([:name])
   end
 end

@@ -12,13 +12,19 @@ defmodule VanadoBackendWeb.MachineController do
   end
 
   def create(conn, %{"machine" => machine_params}) do
-    with {:ok, %Machine{} = machine} <- Machines.create(machine_params) do
-      machine = Machines.get_with_failures!(machine.id)
+    changeset = Machine.validate(machine_params)
 
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.machine_path(conn, :show, machine))
-      |> render("show.json", machine: machine)
+    if changeset.valid? do
+      with {:ok, %Machine{} = machine} <- Machines.create(changeset.changes) do
+        machine = Machines.get_with_failures!(machine.id)
+
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", Routes.machine_path(conn, :show, machine))
+        |> render("show.json", machine: machine)
+      end
+    else
+      {:error, changeset}
     end
   end
 
@@ -28,11 +34,16 @@ defmodule VanadoBackendWeb.MachineController do
   end
 
   def update(conn, %{"id" => id, "machine" => machine_params}) do
+    changeset = Machine.validate(machine_params)
     %Machine{failures: failures} = machine = Machines.get_with_failures!(id)
 
-    with {:ok, %Machine{} = machine} <- Machines.update(machine, machine_params) do
-      machine = Map.put(machine, :failures, failures)
-      render(conn, "show.json", machine: machine)
+    if changeset.valid? do
+      with {:ok, %Machine{} = machine} <- Machines.update(machine, changeset.changes) do
+        machine = Map.put(machine, :failures, failures)
+        render(conn, "show.json", machine: machine)
+      end
+    else
+      {:error, changeset}
     end
   end
 
