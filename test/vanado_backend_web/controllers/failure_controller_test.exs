@@ -4,12 +4,12 @@ defmodule VanadoBackendWeb.FailureControllerTest do
   alias VanadoBackend.Failures
   alias VanadoBackend.Failures.Failure
 
-  @create_attrs %{description: nil, is_fixed: true, name: "some name", priority: :moderate}
+  @create_attrs %{description: nil, is_fixed: true, name: "some name", priority: "moderate"}
   @update_attrs %{
     description: "some updated description",
     is_fixed: false,
     name: "some updated name which is more than 20 characters long",
-    priority: :high
+    priority: "high"
   }
   @invalid_attrs %{description: nil, is_fixed: nil, name: nil, priority: nil, machine_id: nil}
 
