@@ -14,11 +14,17 @@ defmodule VanadoBackendWeb.FailureController do
   end
 
   def create(conn, %{"failure" => failure_params}) do
-    with {:ok, %Failure{} = failure} <- Failures.create(failure_params) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", Routes.failure_path(conn, :show, failure))
-      |> render("show.json", failure: failure)
+    changeset = Failure.validate(failure_params)
+
+    if changeset.valid? do
+      with {:ok, %Failure{} = failure} <- Failures.create(changeset.changes) do
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", Routes.failure_path(conn, :show, failure))
+        |> render("show.json", failure: failure)
+      end
+    else
+      {:error, changeset}
     end
   end
 
@@ -37,10 +43,15 @@ defmodule VanadoBackendWeb.FailureController do
   end
 
   def update(conn, %{"id" => id, "failure" => failure_params}) do
+    changeset = Failure.validate(failure_params)
     failure = Failures.get!(id)
 
-    with {:ok, %Failure{} = failure} <- Failures.update(failure, failure_params) do
-      render(conn, "show_with_files.json", failure: failure)
+    if changeset.valid? do
+      with {:ok, %Failure{} = failure} <- Failures.update(failure, changeset.changes) do
+        render(conn, "show_with_files.json", failure: failure)
+      end
+    else
+      {:error, changeset}
     end
   end
 

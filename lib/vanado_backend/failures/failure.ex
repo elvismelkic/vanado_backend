@@ -5,6 +5,14 @@ defmodule VanadoBackend.Failures.Failure do
   alias VanadoBackend.Files.File
   alias VanadoBackend.Machines.Machine
 
+  @allowed_types %{
+    name: :string,
+    description: :string,
+    is_fixed: :boolean,
+    priority: :string,
+    machine_id: :int
+  }
+
   defenum(PriorityEnum, :priority, [:low, :moderate, :high])
 
   schema "failures" do
@@ -31,5 +39,12 @@ defmodule VanadoBackend.Failures.Failure do
       name: :name_longer_than_20_for_description,
       message: "name has to be longer than 20 characters for description to be allowed"
     )
+  end
+
+  @doc false
+  def validate(data) do
+    {data, @allowed_types}
+    |> cast(data, @attrs)
+    |> validate_required(@required_attrs)
   end
 end
