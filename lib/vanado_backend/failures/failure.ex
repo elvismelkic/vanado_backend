@@ -10,7 +10,7 @@ defmodule VanadoBackend.Failures.Failure do
     description: :string,
     is_fixed: :boolean,
     priority: :string,
-    machine_id: :int
+    machine_id: :integer
   }
 
   defenum(PriorityEnum, :priority, [:low, :moderate, :high])
