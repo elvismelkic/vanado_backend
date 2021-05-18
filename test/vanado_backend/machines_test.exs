@@ -63,6 +63,9 @@ defmodule VanadoBackend.MachinesTest do
 
     test "machine's failures are deleted when machine is deleted" do
       machine = TestHelpers.create_machine_with_failure()
+
+      assert Failures.list() != []
+
       Machines.delete(machine)
 
       assert Failures.list() == []
