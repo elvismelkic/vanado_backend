@@ -91,9 +91,7 @@ defmodule VanadoBackend.FailuresTest do
     end
 
     test "failure's files are deleted when failure is deleted" do
-      stub(VanadoBackend.Api.MockFile, :create_folder_with_parents!, fn _path -> :ok end)
-      stub(VanadoBackend.Api.MockFile, :create_file!, fn _source, _destination -> :ok end)
-      stub(VanadoBackend.Api.MockFile, :delete_file!, fn _path -> :ok end)
+      stub_file_api()
 
       failure = TestHelpers.create_failure_with_file()
 
@@ -122,5 +120,11 @@ defmodule VanadoBackend.FailuresTest do
     valid_attrs = Map.put(@valid_attrs, :machine_id, machine.id)
 
     {machine, valid_attrs}
+  end
+
+  defp stub_file_api do
+    stub(VanadoBackend.Api.MockFile, :create_folder_with_parents!, fn _path -> :ok end)
+    stub(VanadoBackend.Api.MockFile, :create_file!, fn _source, _destination -> :ok end)
+    stub(VanadoBackend.Api.MockFile, :delete_file!, fn _path -> :ok end)
   end
 end
