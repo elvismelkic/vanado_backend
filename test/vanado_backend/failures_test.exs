@@ -47,7 +47,7 @@ defmodule VanadoBackend.FailuresTest do
     end
 
     test "create/1 with invalid data returns error changeset" do
-      assert {:error, changeset} = Failures.create(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{} = changeset} = Failures.create(@invalid_attrs)
       assert "can't be blank" in errors_on(changeset).name
       assert "can't be blank" in errors_on(changeset).is_fixed
       assert "can't be blank" in errors_on(changeset).priority

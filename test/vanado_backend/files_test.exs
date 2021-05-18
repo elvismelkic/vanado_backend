@@ -9,13 +9,12 @@ defmodule VanadoBackend.FilesTest do
   describe "files" do
     alias VanadoBackend.Files.File
 
-    @valid_attrs %{name: "some name", type: "some type"}
-    @invalid_attrs %{name: nil, type: nil}
+    @valid_attrs %{name: "some name", type: "some type", path: "some/test/path"}
+    @invalid_attrs %{name: nil, type: nil, path: nil, failure_id: nil}
 
     test "create/1 with valid data creates a file" do
       failure = TestHelpers.create_failure()
-      file_attrs = TestHelpers.file_upload_struct(@valid_attrs)
-      attrs = %{"failure" => failure.id, "files" => file_attrs}
+      attrs = Map.put(@valid_attrs, :failure_id, failure.id)
 
       stub(VanadoBackend.Api.MockFile, :create_folder_with_parents!, fn _path -> :ok end)
       stub(VanadoBackend.Api.MockFile, :create_file!, fn _source, _destination -> :ok end)
@@ -29,11 +28,10 @@ defmodule VanadoBackend.FilesTest do
     end
 
     test "create/1 with invalid data returns error changeset" do
-      failure = TestHelpers.create_failure()
-      file_attrs = TestHelpers.file_upload_struct(@invalid_attrs)
-      attrs = %{"failure" => failure.id, "files" => file_attrs}
-
-      assert {:error, %Ecto.Changeset{}} = Files.create(attrs)
+      assert {:error, %Ecto.Changeset{} = changeset} = Files.create(@invalid_attrs)
+      assert "can't be blank" in errors_on(changeset).name
+      assert "can't be blank" in errors_on(changeset).type
+      assert "can't be blank" in errors_on(changeset).failure_id
     end
 
     test "delete/1 deletes the file" do
