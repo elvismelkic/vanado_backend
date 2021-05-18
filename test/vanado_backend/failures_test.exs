@@ -1,10 +1,14 @@
 defmodule VanadoBackend.FailuresTest do
   use VanadoBackend.DataCase
 
+  import Mox
+
   alias VanadoBackend.Failures
 
   describe "failures" do
     alias VanadoBackend.Failures.Failure
+    alias VanadoBackend.Files.File
+    alias VanadoBackend.Repo
 
     @valid_attrs %{description: nil, is_fixed: true, name: "some name", priority: :moderate}
     @update_attrs %{description: nil, is_fixed: false, name: "some updated name", priority: :high}
@@ -84,6 +88,20 @@ defmodule VanadoBackend.FailuresTest do
 
       assert {:ok, %Failure{}} = Failures.delete(failure)
       assert_raise Ecto.NoResultsError, fn -> Failures.get!(failure.id) end
+    end
+
+    test "failure's files are deleted when failure is deleted" do
+      stub(VanadoBackend.Api.MockFile, :create_folder_with_parents!, fn _path -> :ok end)
+      stub(VanadoBackend.Api.MockFile, :create_file!, fn _source, _destination -> :ok end)
+      stub(VanadoBackend.Api.MockFile, :delete_file!, fn _path -> :ok end)
+
+      failure = TestHelpers.create_failure_with_file()
+
+      assert Repo.all(File) != []
+
+      Failures.delete(failure)
+
+      assert Repo.all(File) == []
     end
 
     test "change/1 returns a failure changeset" do
