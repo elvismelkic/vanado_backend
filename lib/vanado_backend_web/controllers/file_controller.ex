@@ -2,14 +2,22 @@ defmodule VanadoBackendWeb.FileController do
   use VanadoBackendWeb, :controller
 
   alias VanadoBackend.Files
+  alias VanadoBackend.Files.File
 
   action_fallback VanadoBackendWeb.FallbackController
 
   def create(conn, params) do
-    with {:ok, files} <- Files.create(params) do
-      conn
-      |> put_status(:created)
-      |> render("index.json", files: files)
+    file_params = generate_file_params(params)
+    changeset = File.validate(file_params)
+
+    if changeset.valid? do
+      with {:ok, files} <- Files.create(changeset.changes) do
+        conn
+        |> put_status(:created)
+        |> render("index.json", files: files)
+      end
+    else
+      {:error, changeset}
     end
   end
 
@@ -20,4 +28,14 @@ defmodule VanadoBackendWeb.FileController do
       |> render("index.json", files: files)
     end
   end
+
+  defp generate_file_params(%{"files" => files, "failure" => failure_id}) do
+    files
+    |> Map.new(&rename_keys/1)
+    |> Map.merge(%{"failure_id" => failure_id})
+  end
+
+  defp rename_keys({"filename", value}), do: {"name", value}
+  defp rename_keys({"content_type", value}), do: {"type", value}
+  defp rename_keys(pair), do: pair
 end

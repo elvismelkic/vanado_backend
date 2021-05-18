@@ -25,25 +25,15 @@ defmodule VanadoBackend.Files do
   Creates a file.
   """
   def create(attrs \\ %{}) do
-    failure_id = attrs["failure"]
-    attr_files = attrs["files"]
-
-    files = %{
-      failure_id: failure_id,
-      name: attr_files.filename,
-      type: attr_files.content_type,
-      path: attr_files.path
-    }
-
     Repo.transaction(fn repo ->
       %VanadoFile{}
-      |> VanadoFile.changeset(files)
+      |> VanadoFile.changeset(attrs)
       |> repo.insert()
       |> case do
         {:ok, file} ->
           @file_module.create_folder_with_parents!("failure_#{file.failure_id}/")
-          @file_module.create_file!(files.path, "failure_#{file.failure_id}/#{file.name}")
-          list_for_failure(failure_id)
+          @file_module.create_file!(attrs.path, "failure_#{file.failure_id}/#{file.name}")
+          list_for_failure(attrs.failure_id)
 
         {:error, changeset} ->
           repo.rollback(changeset)
