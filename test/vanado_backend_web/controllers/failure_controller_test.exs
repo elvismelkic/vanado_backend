@@ -1,7 +1,6 @@
 defmodule VanadoBackendWeb.FailureControllerTest do
   use VanadoBackendWeb.ConnCase
 
-  alias VanadoBackend.Failures
   alias VanadoBackend.Failures.Failure
 
   @create_attrs %{description: nil, is_fixed: true, name: "some name", priority: "moderate"}

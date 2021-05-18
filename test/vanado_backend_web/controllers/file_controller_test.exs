@@ -3,9 +3,6 @@ defmodule VanadoBackendWeb.FileControllerTest do
 
   import Mox
 
-  alias VanadoBackend.Files
-  alias VanadoBackend.Files.File
-
   @create_attrs %{
     filename: "some name",
     content_type: "some type",
