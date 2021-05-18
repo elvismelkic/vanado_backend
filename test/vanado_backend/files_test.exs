@@ -35,6 +35,8 @@ defmodule VanadoBackend.FilesTest do
     end
 
     test "delete/1 deletes the file" do
+      stub_file_api()
+
       file = TestHelpers.create_file()
 
       stub(VanadoBackend.Api.MockFile, :delete_file!, fn _path -> :ok end)
@@ -44,9 +46,17 @@ defmodule VanadoBackend.FilesTest do
     end
 
     test "change_file/1 returns a file changeset" do
+      stub_file_api()
+
       file = TestHelpers.create_file()
 
       assert %Ecto.Changeset{} = Files.change(file)
     end
+  end
+
+  defp stub_file_api do
+    stub(VanadoBackend.Api.MockFile, :create_folder_with_parents!, fn _path -> :ok end)
+    stub(VanadoBackend.Api.MockFile, :create_file!, fn _source, _destination -> :ok end)
+    stub(VanadoBackend.Api.MockFile, :delete_file!, fn _path -> :ok end)
   end
 end

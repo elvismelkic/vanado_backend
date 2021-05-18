@@ -56,11 +56,11 @@ defmodule VanadoBackend.TestHelpers do
   def create_file do
     failure = create_failure()
 
-    file =
-      %File{}
-      |> File.changeset(Map.put(@file_attrs, :failure_id, failure.id))
-      |> Repo.insert!()
+    {:ok, files} =
+      @file_attrs
+      |> Map.put(:failure_id, failure.id)
+      |> Files.create()
 
-    file
+    hd(files)
   end
 end
