@@ -30,15 +30,16 @@ defmodule VanadoBackendWeb.FailureController do
 
   def show(conn, %{"id" => id}) do
     failure = Failures.get!(id)
-    render(conn, "show_with_files.json", failure: failure)
+    render(conn, "show_full.json", failure: failure)
   end
 
   def update(%Plug.Conn{method: "PATCH"} = conn, %{"id" => id}) do
+    IO.inspect(conn)
     failure = Failures.get!(id)
 
     with {:ok, %Failure{} = failure} <-
            Failures.update(failure, %{is_fixed: !failure.is_fixed}) do
-      render(conn, "show_with_files.json", failure: failure)
+      render(conn, "show_full.json", failure: failure)
     end
   end
 
@@ -48,7 +49,7 @@ defmodule VanadoBackendWeb.FailureController do
 
     if changeset.valid? do
       with {:ok, %Failure{} = failure} <- Failures.update(failure, changeset.changes) do
-        render(conn, "show_with_files.json", failure: failure)
+        render(conn, "show_full.json", failure: failure)
       end
     else
       {:error, changeset}
