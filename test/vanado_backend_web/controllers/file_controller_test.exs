@@ -1,6 +1,8 @@
 defmodule VanadoBackendWeb.FileControllerTest do
   use VanadoBackendWeb.ConnCase
 
+  import Mox
+
   alias VanadoBackend.Files
   alias VanadoBackend.Files.File
 
@@ -20,20 +22,21 @@ defmodule VanadoBackendWeb.FileControllerTest do
       failure = TestHelpers.create_failure()
       attrs = %{"failure" => failure.id, "files" => @create_attrs}
 
+      stub(VanadoBackend.Api.MockFile, :create_folder_with_parents!, fn _path -> :ok end)
+      stub(VanadoBackend.Api.MockFile, :create_file!, fn _source, _destination -> :ok end)
+
       conn = post(conn, Routes.file_path(conn, :create), attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.file_path(conn, :show, id))
-
-      assert %{
-               "id" => id,
-               "name" => "some name",
-               "type" => "some type"
-             } = json_response(conn, 200)["data"]
+      assert [file] = json_response(conn, 201)["data"]
+      assert file["name"] == "some name"
+      assert file["type"] == "some type"
+      assert file["failureId"] == failure.id
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.file_path(conn, :create), file: @invalid_attrs)
+      attrs = %{"failure" => 999_999, "files" => @invalid_attrs}
+      conn = post(conn, Routes.file_path(conn, :create), attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -44,10 +47,6 @@ defmodule VanadoBackendWeb.FileControllerTest do
     test "deletes chosen file", %{conn: conn, file: file} do
       conn = delete(conn, Routes.file_path(conn, :delete, file))
       assert response(conn, 204)
-
-      assert_error_sent 404, fn ->
-        get(conn, Routes.file_path(conn, :show, file))
-      end
     end
   end
 
