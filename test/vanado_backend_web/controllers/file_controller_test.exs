@@ -44,14 +44,16 @@ defmodule VanadoBackendWeb.FileControllerTest do
   describe "delete file" do
     setup [:create_file]
 
-    test "deletes chosen file", %{conn: conn, file: file} do
+    test "deletes chosen file", %{conn: conn, test_file: file} do
+      stub(VanadoBackend.Api.MockFile, :delete_file!, fn _path -> :ok end)
+
       conn = delete(conn, Routes.file_path(conn, :delete, file))
-      assert response(conn, 204)
+      assert json_response(conn, 200)["data"] == []
     end
   end
 
   defp create_file(_) do
     file = TestHelpers.create_file()
-    %{file: file}
+    %{test_file: file}
   end
 end
