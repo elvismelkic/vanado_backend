@@ -19,6 +19,7 @@ defmodule VanadoBackend.Files.File do
     file
     |> cast(attrs, @attrs)
     |> validate_required(@attrs)
+    |> foreign_key_constraint(:failure_id)
     |> unique_constraint([:name, :failure_id])
   end
 end

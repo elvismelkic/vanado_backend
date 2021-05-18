@@ -35,6 +35,7 @@ defmodule VanadoBackend.Failures.Failure do
     failure
     |> cast(attrs, @attrs)
     |> validate_required(@required_attrs)
+    |> foreign_key_constraint(:machine_id)
     |> check_constraint(:name,
       name: :name_longer_than_20_for_description,
       message: "name has to be longer than 20 characters for description to be allowed"
