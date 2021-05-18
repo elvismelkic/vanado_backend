@@ -52,7 +52,7 @@ defmodule VanadoBackend.Files do
       |> repo.delete()
       |> case do
         {:ok, _file} ->
-          @file_module.delete!("failure_#{failure_id}/#{name}")
+          @file_module.delete_file!("failure_#{failure_id}/#{name}")
           list_for_failure(failure_id)
 
         {:error, changeset} ->

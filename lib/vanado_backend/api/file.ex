@@ -5,7 +5,7 @@ defmodule VanadoBackend.Api.File do
 
   @callback create_folder_with_parents!(String.t()) :: :ok
   @callback create_file!(String.t(), String.t()) :: :ok
-  @callback delete!(String.t()) :: :ok
+  @callback delete_file!(String.t()) :: :ok
 
   @root_path "./priv/static/"
 
@@ -26,7 +26,7 @@ defmodule VanadoBackend.Api.File do
   @doc """
   Deletes a file.
   """
-  def delete!(path) do
+  def delete_file!(path) do
     File.rm!("#{@root_path}#{path}")
   end
 end
