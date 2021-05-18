@@ -39,7 +39,7 @@ defmodule VanadoBackend.FilesTest do
     test "delete/1 deletes the file" do
       file = TestHelpers.create_file()
 
-      stub(VanadoBackend.Api.MockFile, :delete!, fn _path -> :ok end)
+      stub(VanadoBackend.Api.MockFile, :delete_file!, fn _path -> :ok end)
 
       assert {:ok, files} = Files.delete(file.id)
       assert files == []
