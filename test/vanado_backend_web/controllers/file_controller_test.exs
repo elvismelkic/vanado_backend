@@ -3,12 +3,12 @@ defmodule VanadoBackendWeb.FileControllerTest do
 
   import Mox
 
-  @create_attrs %{
+  @create_attrs %Plug.Upload{
     filename: "some name",
     content_type: "some type",
     path: "some/test/path"
   }
-  @invalid_attrs %{name: nil, type: nil}
+  @invalid_attrs %Plug.Upload{filename: nil, content_type: nil, path: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
