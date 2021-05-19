@@ -34,7 +34,6 @@ defmodule VanadoBackendWeb.FailureController do
   end
 
   def update(%Plug.Conn{method: "PATCH"} = conn, %{"id" => id}) do
-    IO.inspect(conn)
     failure = Failures.get!(id)
 
     with {:ok, %Failure{} = failure} <-

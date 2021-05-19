@@ -37,7 +37,8 @@ defmodule VanadoBackendWeb.FailureView do
       name: failure.name,
       description: failure.description,
       is_fixed: failure.is_fixed,
-      priority: failure.priority
+      priority: failure.priority,
+      machine_id: failure.machine_id
     }
   end
 end
