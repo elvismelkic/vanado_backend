@@ -29,4 +29,11 @@ defmodule VanadoBackend.Api.File do
   def delete_file!(path) do
     File.rm!("#{@root_path}#{path}")
   end
+
+  @doc """
+  Deletes a folder with all the files in it.
+  """
+  def delete_folder!(path) do
+    File.rm_rf!("#{@root_path}#{path}")
+  end
 end

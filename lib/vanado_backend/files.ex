@@ -62,6 +62,25 @@ defmodule VanadoBackend.Files do
   end
 
   @doc """
+  Deletes all failure's files.
+  """
+  def delete_all_for_failure(failure_id) do
+    Repo.transaction(fn repo ->
+      VanadoFile
+      |> where([f], f.failure_id == ^failure_id)
+      |> select([f], f)
+      |> repo.delete_all()
+      |> case do
+        {_number_of_deleted_items, _deleted_items} ->
+          @file_module.delete_folder!("failure_#{failure_id}/")
+
+        _error ->
+          repo.rollback("something went wrong")
+      end
+    end)
+  end
+
+  @doc """
   Returns an `%Ecto.Changeset{}` for tracking file changes.
   """
   def change(%VanadoFile{} = file, attrs \\ %{}) do

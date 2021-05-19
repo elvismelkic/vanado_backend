@@ -7,6 +7,7 @@ defmodule VanadoBackend.Failures do
 
   alias VanadoBackend.Repo
   alias VanadoBackend.Failures.Failure
+  alias VanadoBackend.Files
 
   @doc """
   Returns the list of failures conditionally filtered by `is_fixed` field.
@@ -46,7 +47,19 @@ defmodule VanadoBackend.Failures do
   Deletes a failure.
   """
   def delete(%Failure{} = failure) do
-    Repo.delete(failure)
+    Repo.transaction(fn repo ->
+      failure
+      |> Repo.delete()
+      |> case do
+        {:ok, failure} ->
+          if length(failure.files) > 0, do: Files.delete_all_for_failure(failure.id)
+
+          failure
+
+        {:error, changeset} ->
+          repo.rollback(changeset)
+      end
+    end)
   end
 
   @doc """
