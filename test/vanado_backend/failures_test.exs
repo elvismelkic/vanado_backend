@@ -126,5 +126,9 @@ defmodule VanadoBackend.FailuresTest do
     stub(VanadoBackend.Api.MockFile, :create_folder_with_parents!, fn _path -> :ok end)
     stub(VanadoBackend.Api.MockFile, :create_file!, fn _source, _destination -> :ok end)
     stub(VanadoBackend.Api.MockFile, :delete_file!, fn _path -> :ok end)
+
+    stub(VanadoBackend.Api.MockFile, :delete_folder!, fn _path ->
+      ["removed_folder", "file_in_folder.ext"]
+    end)
   end
 end

@@ -50,7 +50,7 @@ defmodule VanadoBackend.TestHelpers do
       |> Map.put(:failure_id, failure.id)
       |> Files.create()
 
-    failure |> Repo.preload(:files)
+    failure |> Repo.preload(:files, force: true)
   end
 
   def create_file do
