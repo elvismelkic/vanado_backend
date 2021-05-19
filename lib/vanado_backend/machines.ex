@@ -4,8 +4,9 @@ defmodule VanadoBackend.Machines do
   """
 
   import Ecto.Query, warn: false
-  alias VanadoBackend.Repo
 
+  alias VanadoBackend.Files
+  alias VanadoBackend.Repo
   alias VanadoBackend.Machines.Machine
 
   @doc """
@@ -51,7 +52,23 @@ defmodule VanadoBackend.Machines do
   Deletes a machine.
   """
   def delete(%Machine{} = machine) do
-    Repo.delete(machine)
+    Repo.transaction(fn repo ->
+      machine_failures = machine |> Repo.preload(failures: :files) |> (& &1.failures).()
+      files = machine_failures |> Enum.flat_map(& &1.files)
+
+      machine
+      |> Repo.delete()
+      |> case do
+        {:ok, machine} ->
+          if length(files) > 0,
+            do: Enum.each(machine_failures, &Files.delete_all_for_failure(&1.id))
+
+          machine
+
+        {:error, changeset} ->
+          repo.rollback(changeset)
+      end
+    end)
   end
 
   @doc """
